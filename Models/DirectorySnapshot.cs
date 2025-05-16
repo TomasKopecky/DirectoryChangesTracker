@@ -29,5 +29,10 @@
 		/// Collection of file snapshots captured during the scan.
 		/// </summary>
 		public HashSet<FileSnapshot> Files { get; set; } = new();
+
+		/// <summary>
+		/// Collection of subdirectory names captured during the scan.
+		/// </summary>
+		public HashSet<string> SubDirectories { get; set; } = new();
 	}
 }
