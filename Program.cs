@@ -1,3 +1,6 @@
+using DirectoryChangesTracker.Services;
+using DirectoryChangesTracker.Validators;
+
 namespace DirectoryChangesTracker
 {
 	public class Program
@@ -8,6 +11,10 @@ namespace DirectoryChangesTracker
 
 			// Add services to the container.
 			builder.Services.AddControllersWithViews();
+
+			// Add services via DI
+			builder.Services.AddScoped<IDirectoryValidator, DirectoryValidator>();
+			builder.Services.AddScoped<IDirectoryScanner, DirectoryScanner>();
 
 			var app = builder.Build();
 
