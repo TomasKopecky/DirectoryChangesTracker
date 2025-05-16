@@ -15,6 +15,7 @@ namespace DirectoryChangesTracker
 			// Add services via DI
 			builder.Services.AddScoped<IDirectoryValidator, DirectoryValidator>();
 			builder.Services.AddScoped<IDirectoryScanner, DirectoryScanner>();
+			builder.Services.AddScoped<IDirectorySnapshotComparer, DirectorySnapshotComparer>();
 
 			var app = builder.Build();
 
