@@ -16,6 +16,7 @@ namespace DirectoryChangesTracker
 			builder.Services.AddScoped<IDirectoryValidator, DirectoryValidator>();
 			builder.Services.AddScoped<IDirectoryScanner, DirectoryScanner>();
 			builder.Services.AddScoped<IDirectorySnapshotComparer, DirectorySnapshotComparer>();
+			builder.Services.AddScoped<IFileValidator, FileValidator>();
 
 			var app = builder.Build();
 

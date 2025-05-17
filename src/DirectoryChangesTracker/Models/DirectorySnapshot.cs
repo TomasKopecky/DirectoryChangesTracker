@@ -1,14 +1,18 @@
-﻿namespace DirectoryChangesTracker.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace DirectoryChangesTracker.Models
 {
 	/// <summary>
 	/// Represents a snapshot of a single directory
 	/// </summary>
 	public class DirectorySnapshot
 	{
-		/// <summary>
-		/// Full local path to the scanned directory.
-		/// </summary>
-		public required string LocalPath { get; set; }
+        /// <summary>
+        /// Full local path to the scanned directory.
+        /// </summary>
+        [Display(Name = "Local directory path")]
+        [Required(ErrorMessage = "Insert the local directory path")]
+        public required string LocalPath { get; set; }
 
 		/// <summary>
 		/// Date and time when this directory was scanned for the first time.

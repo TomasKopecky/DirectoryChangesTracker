@@ -1,0 +1,23 @@
+﻿@model DirectoryChangesTracker.Models.DirectorySnapshot
+
+@{
+	ViewData["Title"] = "Directory scanner";
+}
+
+<h2>Skenování adresáře</h2>
+
+<form asp-action="Index" method="post">
+	<div class="form-group">
+		<label asp-for="LocalPath" class="control-label"></label>
+		<input asp-for="LocalPath" class="form-control" type="text"/>
+		<span asp-validation-for="LocalPath" class="text-danger"></span>
+	</div>
+
+	<button type="submit" class="btn btn-primary">Run scanning</button>
+</form>
+
+@section Scripts {
+	@{
+		await Html.RenderPartialAsync("_ValidationScriptsPartial");
+	}
+}
