@@ -38,7 +38,7 @@ namespace DirectoryChangesTracker.Repositories
 			catch (Exception ex)
 			{
 				//TODO: log the exception
-				return Result<IReadOnlyCollection<ScannedDirectoryResult>>.Failure($"Error when trying to load the saved data from the JSON file");
+				return Result<IReadOnlyCollection<ScannedDirectoryResult>>.Failure("Error when trying to load the saved data from the JSON file");
 			}
 		}
 
@@ -54,7 +54,7 @@ namespace DirectoryChangesTracker.Repositories
 			catch (Exception ex)
 			{
 				//TODO: log the exception
-				return Result.Failure($"Failed to save results: {ex.Message}");
+				return Result.Failure("Error when trying to save the data to the JSON file");
 			}
 		}
 	}
