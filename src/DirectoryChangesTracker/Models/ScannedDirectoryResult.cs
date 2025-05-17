@@ -29,11 +29,11 @@
 		/// <summary>
 		/// Subdirectories (paths) that were detected as newly created since the last scan.
 		/// </summary>
-		public IReadOnlyCollection<string>? NewCreatedSubdirectories { get; set; }
+		public IReadOnlyCollection<string> NewCreatedSubdirectories { get; set; } = new HashSet<string>();
 
 		/// <summary>
 		/// Subdirectories (paths) that were deleted since the last scan.
 		/// </summary>
-		public IReadOnlyCollection<string>? DeletedSubdirectories { get; set; }
+		public IReadOnlyCollection<string> DeletedSubdirectories { get; set; } = new HashSet<string>();
 	}
 }
