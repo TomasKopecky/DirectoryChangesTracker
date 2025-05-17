@@ -25,5 +25,15 @@
 		/// Files that were present in the previous snapshot but no longer exist.
 		/// </summary>
 		public IReadOnlyCollection<FileSnapshot> DeletedFiles { get; set; } = new HashSet<FileSnapshot>();
+
+		/// <summary>
+		/// Subdirectories (paths) that were detected as newly created since the last scan.
+		/// </summary>
+		public IReadOnlyCollection<string>? NewCreatedSubdirectories { get; set; }
+
+		/// <summary>
+		/// Subdirectories (paths) that were deleted since the last scan.
+		/// </summary>
+		public IReadOnlyCollection<string>? DeletedSubdirectories { get; set; }
 	}
 }
