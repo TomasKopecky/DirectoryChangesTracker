@@ -9,12 +9,12 @@ namespace DirectoryChangesTracker.Services
 	public class DirectorySnapshotComparer : IDirectorySnapshotComparer
 	{
 		/// <inheritdoc />
-		public Result<ScannedDirectoryResult> Compare(DirectorySnapshot directorySnapshotA, DirectorySnapshot directorySnapshotB)
+		public Result<ScannedDirectoryResult> Compare(DirectorySnapshot oldSnapshot, DirectorySnapshot newSnapshot)
 		{
-			if (directorySnapshotA == null || directorySnapshotB == null)
+			if (oldSnapshot == null || newSnapshot == null)
 				return Result<ScannedDirectoryResult>.Failure("One of the provided directory snapshots is null");
 
-			ScannedDirectoryResult scannedDirectoryResult = CalculateDifferences(directorySnapshotA, directorySnapshotB);
+			ScannedDirectoryResult scannedDirectoryResult = CalculateDifferences(oldSnapshot, newSnapshot);
 
 			return Result<ScannedDirectoryResult>.Success(scannedDirectoryResult);
 		}
@@ -36,8 +36,8 @@ namespace DirectoryChangesTracker.Services
 			if (newSnapshot.LocalPath != oldSnapshot.LocalPath)
 				return scannedDirectoryResult;
 
-			CompareFiles(oldSnapshot, newSnapshot, ref scannedDirectoryResult);
-			CompareSubdirectories(oldSnapshot, newSnapshot, ref scannedDirectoryResult);
+			CompareFiles(oldSnapshot, newSnapshot, scannedDirectoryResult);
+			CompareSubdirectories(oldSnapshot, newSnapshot, scannedDirectoryResult);
 
 			return scannedDirectoryResult;
 		}
@@ -49,22 +49,33 @@ namespace DirectoryChangesTracker.Services
 		/// <param name="newSnapshot">The latest snapshot of the directory.</param>
 		/// <param name="scannedDirectoryResult">The result object to populate with file changes.</param>
 
-		private void CompareFiles(DirectorySnapshot oldSnapshot, DirectorySnapshot newSnapshot, ref ScannedDirectoryResult scannedDirectoryResult)
+		private void CompareFiles(DirectorySnapshot oldSnapshot, DirectorySnapshot newSnapshot, ScannedDirectoryResult scannedDirectoryResult)
 		{
 			HashSet<FileSnapshot> newFiles = newSnapshot.Files;
 			HashSet<FileSnapshot> oldFiles = oldSnapshot.Files;
 
+			// get the newly created files
 			HashSet<FileSnapshot> newCreatedFiles = newFiles
 				.Where(nf => oldFiles.All(of => of.LocalPath != nf.LocalPath))
 				.ToHashSet();
 
+			// get the deleted files
 			HashSet<FileSnapshot> deletedFiles = oldFiles
 				.Where(of => newFiles.All(nf => nf.LocalPath != of.LocalPath))
 				.ToHashSet();
 
+			// get the modified files
 			HashSet<FileSnapshot> modifiedFiles = newFiles
 				.Where(nf => oldFiles.Any(of => of.LocalPath == nf.LocalPath && of.Md5Hash != nf.Md5Hash))
 				.ToHashSet();
+
+			// set the version 1 for the new created files
+			foreach (var newFile in newCreatedFiles)
+				newFile.Version = 1;
+
+			// increment the version for the modified files
+			foreach (var modifiedFile in modifiedFiles)
+				modifiedFile.Version += 1;
 
 			scannedDirectoryResult.NewCreatedFiles = newCreatedFiles;
 			scannedDirectoryResult.ModifiedFiles = modifiedFiles;
@@ -78,7 +89,7 @@ namespace DirectoryChangesTracker.Services
 		/// <param name="newSnapshot">The latest snapshot of the directory.</param>
 		/// <param name="scannedDirectoryResult">The result object to populate with subdirectory changes.</param>
 
-		private void CompareSubdirectories(DirectorySnapshot oldSnapshot, DirectorySnapshot newSnapshot, ref ScannedDirectoryResult scannedDirectoryResult)
+		private void CompareSubdirectories(DirectorySnapshot oldSnapshot, DirectorySnapshot newSnapshot, ScannedDirectoryResult scannedDirectoryResult)
 		{
 			HashSet<string> newSubdirectories = newSnapshot.SubDirectories;
 			HashSet<string> oldSubdirectories = oldSnapshot.SubDirectories;
