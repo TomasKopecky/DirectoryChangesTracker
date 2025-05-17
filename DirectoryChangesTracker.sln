@@ -3,23 +3,57 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.11.35312.102
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DirectoryChangesTracker", "DirectoryChangesTracker.csproj", "{68331F70-0FDA-4B4A-81D8-56212790C8D6}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{69A4D052-BC4B-43C1-9E52-D2AC1D285B3C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DirectoryChangesTracker", "src\DirectoryChangesTracker\DirectoryChangesTracker.csproj", "{280D1885-319E-4927-A2A7-E82BA18A4785}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{139751B4-F402-4286-A583-5AD32390D081}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DirectoryChangesTracker.Tests", "tests\DirectoryChangesTracker.Tests\DirectoryChangesTracker.Tests.csproj", "{BCBFA433-0EB0-45F9-8B41-F195933EBD01}"
 EndProject
 Global
-	GlobalSection(SolutionConfigurationPlatforms) = preSolution
-		Debug|Any CPU = Debug|Any CPU
-		Release|Any CPU = Release|Any CPU
-	EndGlobalSection
-	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{68331F70-0FDA-4B4A-81D8-56212790C8D6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{68331F70-0FDA-4B4A-81D8-56212790C8D6}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{68331F70-0FDA-4B4A-81D8-56212790C8D6}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{68331F70-0FDA-4B4A-81D8-56212790C8D6}.Release|Any CPU.Build.0 = Release|Any CPU
-	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {02C6BF81-E3BD-4D0F-B572-007551CFB123}
+	EndGlobalSection
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
+		Release|Any CPU = Release|Any CPU
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{280D1885-319E-4927-A2A7-E82BA18A4785}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{280D1885-319E-4927-A2A7-E82BA18A4785}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{280D1885-319E-4927-A2A7-E82BA18A4785}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{280D1885-319E-4927-A2A7-E82BA18A4785}.Debug|x64.Build.0 = Debug|Any CPU
+		{280D1885-319E-4927-A2A7-E82BA18A4785}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{280D1885-319E-4927-A2A7-E82BA18A4785}.Debug|x86.Build.0 = Debug|Any CPU
+		{280D1885-319E-4927-A2A7-E82BA18A4785}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{280D1885-319E-4927-A2A7-E82BA18A4785}.Release|Any CPU.Build.0 = Release|Any CPU
+		{280D1885-319E-4927-A2A7-E82BA18A4785}.Release|x64.ActiveCfg = Release|Any CPU
+		{280D1885-319E-4927-A2A7-E82BA18A4785}.Release|x64.Build.0 = Release|Any CPU
+		{280D1885-319E-4927-A2A7-E82BA18A4785}.Release|x86.ActiveCfg = Release|Any CPU
+		{280D1885-319E-4927-A2A7-E82BA18A4785}.Release|x86.Build.0 = Release|Any CPU
+		{BCBFA433-0EB0-45F9-8B41-F195933EBD01}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BCBFA433-0EB0-45F9-8B41-F195933EBD01}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BCBFA433-0EB0-45F9-8B41-F195933EBD01}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{BCBFA433-0EB0-45F9-8B41-F195933EBD01}.Debug|x64.Build.0 = Debug|Any CPU
+		{BCBFA433-0EB0-45F9-8B41-F195933EBD01}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{BCBFA433-0EB0-45F9-8B41-F195933EBD01}.Debug|x86.Build.0 = Debug|Any CPU
+		{BCBFA433-0EB0-45F9-8B41-F195933EBD01}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BCBFA433-0EB0-45F9-8B41-F195933EBD01}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BCBFA433-0EB0-45F9-8B41-F195933EBD01}.Release|x64.ActiveCfg = Release|Any CPU
+		{BCBFA433-0EB0-45F9-8B41-F195933EBD01}.Release|x64.Build.0 = Release|Any CPU
+		{BCBFA433-0EB0-45F9-8B41-F195933EBD01}.Release|x86.ActiveCfg = Release|Any CPU
+		{BCBFA433-0EB0-45F9-8B41-F195933EBD01}.Release|x86.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{280D1885-319E-4927-A2A7-E82BA18A4785} = {69A4D052-BC4B-43C1-9E52-D2AC1D285B3C}
+		{BCBFA433-0EB0-45F9-8B41-F195933EBD01} = {139751B4-F402-4286-A583-5AD32390D081}
 	EndGlobalSection
 EndGlobal
