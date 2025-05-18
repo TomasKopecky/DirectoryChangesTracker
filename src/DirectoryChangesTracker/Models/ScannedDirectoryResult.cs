@@ -37,6 +37,11 @@
 		public IReadOnlyCollection<string> DeletedSubdirectories { get; set; } = new HashSet<string>();
 
 		/// <summary>
+		/// Indicates whether the directory snapshot is initialized for the first time
+		/// </summary>
+		public bool IsNew { get; set; }
+
+		/// <summary>
 		/// Indicates whether any changes (files or subdirectories) were detected.
 		/// </summary>
 		public bool HasFilesOrDirectoriesChanges =>

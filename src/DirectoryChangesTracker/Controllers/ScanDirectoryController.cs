@@ -62,7 +62,7 @@ namespace DirectoryChangesTracker.Controllers
 
 			ScannedDirectoryResult directoryScannerPreviousResult = new ScannedDirectoryResult() { DirectorySnapshot = new() { LocalPath = localDirectoryPath } };
 
-			if (!loadedJsonFileResults.Value.Any(fr => fr.DirectorySnapshot.LocalPath == localDirectoryPath))
+			if (loadedJsonFileResults.Value.Any(fr => fr.DirectorySnapshot.LocalPath == localDirectoryPath))
 				directoryScannerPreviousResult = loadedJsonFileResults.Value.First(fr => fr.DirectorySnapshot.LocalPath == localDirectoryPath);
 
 			Result<ScannedDirectoryResult> snapshotComparerResult = _directorySnapshotComparer.Compare(directoryScannerPreviousResult.DirectorySnapshot, directoryScannerCurrentResult.Value);
@@ -73,7 +73,7 @@ namespace DirectoryChangesTracker.Controllers
 			if (!SuccessOrAddModelError(updateAndSaveScanResult, "Failed to update and save the current directory snapshot result"))
 				return View(null);
 
-			return View(snapshotComparerResult);
+			return View(snapshotComparerResult.Value);
 		}
 
 		/// <summary>
@@ -121,12 +121,22 @@ namespace DirectoryChangesTracker.Controllers
 
 			try
 			{
-				ScannedDirectoryResult matchingScannedDirectoryResult = scannedDirectoryResults.First(dr => dr.DirectorySnapshot.LocalPath == newScannedDirectoryResult.DirectorySnapshot.LocalPath);
+				ScannedDirectoryResult matchingScannedDirectoryResult = new() { DirectorySnapshot = newScannedDirectoryResult.DirectorySnapshot };
+
+				if (scannedDirectoryResults.Any(dr => dr.DirectorySnapshot.LocalPath == newScannedDirectoryResult.DirectorySnapshot.LocalPath))
+					matchingScannedDirectoryResult = scannedDirectoryResults.First(dr => dr.DirectorySnapshot.LocalPath == newScannedDirectoryResult.DirectorySnapshot.LocalPath);
 
 				newScannedDirectoryResult.DirectorySnapshot.FirstListing = matchingScannedDirectoryResult.DirectorySnapshot.FirstListing;
 				newScannedDirectoryResult.DirectorySnapshot.ListingsCount = matchingScannedDirectoryResult.DirectorySnapshot.ListingsCount + 1;
 
 				matchingScannedDirectoryResult = newScannedDirectoryResult;
+
+				// if the result for the specific path doesn't exist yet - create it
+				if (!scannedDirectoryModifiedResults.Any(mr => mr.DirectorySnapshot.LocalPath == matchingScannedDirectoryResult.DirectorySnapshot.LocalPath))
+				{
+					matchingScannedDirectoryResult.IsNew = true;
+					scannedDirectoryModifiedResults.Add(matchingScannedDirectoryResult);
+				}
 
 				await _directoryScanRepository.SaveAllAsync(scannedDirectoryModifiedResults);
 

@@ -26,8 +26,16 @@ namespace DirectoryChangesTracker.Repositories
 			{
 				if (!File.Exists(_jsonOutputFilePath))
 				{
-					//TODO: log the failure
-					return Result<IReadOnlyCollection<ScannedDirectoryResult>>.Failure("Error when trying to load the saved data from the JSON file - the input file doesn't exist");
+					try
+					{
+						// Create an empty file with an empty collection
+						await File.WriteAllTextAsync(_jsonOutputFilePath, "[]");
+					}
+					catch (Exception ex)
+					{
+						//TODO: log the exception
+						return Result<IReadOnlyCollection<ScannedDirectoryResult>>.Failure("Error when trying to create the output JSON storage file");
+					}
 				}
 
 				string json = await File.ReadAllTextAsync(_jsonOutputFilePath);
