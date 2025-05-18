@@ -21,8 +21,8 @@ namespace DirectoryChangesTracker.Validators
 			if (string.IsNullOrEmpty(localDirectoryPath))
 				return Result.Failure($"The provided folder path '{localDirectoryPath}' is null or empty");
 
-			if (!Directory.Exists(localDirectoryPath))
-				return Result.Failure($"The provided directory path '{localDirectoryPath}' doesn't exist");
+			//if (!Directory.Exists(localDirectoryPath))
+			//	return Result.Failure($"The provided directory path '{localDirectoryPath}' doesn't exist");
 
 			return Result.Success();
 		}

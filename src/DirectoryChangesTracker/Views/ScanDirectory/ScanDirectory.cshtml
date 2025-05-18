@@ -37,6 +37,14 @@ else
 			<strong>@Model.DirectorySnapshot.LocalPath</strong>
 		</div>
 	}
+	else if (Model.IsNew)
+	{
+		<div class="alert alert-success">
+			Newly created directory for path:
+			<strong>@Model.DirectorySnapshot.LocalPath</strong>
+		</div>
+	}
+
 	else
 	{
 		@if (Model.NewCreatedFiles.Any())
@@ -93,6 +101,23 @@ else
 				}
 			</ul>
 		}
+	}
+
+	@if (Model.DirectorySnapshot.Files.Any())
+	{
+		<h4>
+			<a class="text-decoration-none" data-bs-toggle="collapse" href="#newFilesCollapse" role="button" aria-expanded="false" aria-controls="newFilesCollapse">
+				🟢 Current files count: @Model.DirectorySnapshot.Files.Count (click to see the list)
+			</a>
+		</h4>
+		<div class="collapse mb-3" id="newFilesCollapse">
+			<ul class="list-group">
+				@foreach (FileSnapshot file in Model.DirectorySnapshot.Files)
+				{
+					<li class="list-group-item text-break">@file.LocalPath, Version: @file.Version</li>
+				}
+			</ul>
+		</div>
 	}
 }
 
