@@ -1,0 +1,50 @@
+﻿@model DirectoryChangesTracker.Models.ScannedDirectoryResult
+
+@{
+	ViewData["Title"] = "Directory scanner result";
+}
+
+<h2>Directory scanning result</h2>
+
+@if (!Model.HasFilesOrDirectoriesChanges)
+{
+	<div class="alert alert-success">
+		No changes detected since the last scanning for path:
+		<strong>@Model.DirectorySnapshot.LocalPath</strong>
+	</div>
+}
+else
+{
+	@if (Model.NewCreatedFiles.Any())
+	{
+		<h4>🟢 New files: @Model.NewCreatedFiles.Count</h4>
+		<ul class="list-group mb-3">
+			@foreach (var file in Model.NewCreatedFiles)
+			{
+				<li class="list-group-item">@file.LocalPath</li>
+			}
+		</ul>
+	}
+
+	@if (Model.ModifiedFiles.Any())
+	{
+		<h4>🟡 Modified files: @Model.ModifiedFiles.Count</h4>
+		<ul class="list-group mb-3">
+			@foreach (var file in Model.ModifiedFiles)
+			{
+				<li class="list-group-item">@file.LocalPath</li>
+			}
+		</ul>
+	}
+
+	@if (Model.DeletedFiles.Any())
+	{
+		<h4>🔴 Deleted files: @Model.DeletedFiles.Count</h4>
+		<ul class="list-group mb-3">
+			@foreach (var file in Model.DeletedFiles)
+			{
+				<li class="list-group-item">@file.LocalPath</li>
+			}
+		</ul>
+	}
+}

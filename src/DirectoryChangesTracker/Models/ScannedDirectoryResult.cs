@@ -35,5 +35,15 @@
 		/// Subdirectories (paths) that were deleted since the last scan.
 		/// </summary>
 		public IReadOnlyCollection<string> DeletedSubdirectories { get; set; } = new HashSet<string>();
+
+		/// <summary>
+		/// Indicates whether any changes (files or subdirectories) were detected.
+		/// </summary>
+		public bool HasFilesOrDirectoriesChanges =>
+			NewCreatedFiles.Any() ||
+			ModifiedFiles.Any() ||
+			DeletedFiles.Any() ||
+			NewCreatedSubdirectories.Any() ||
+			DeletedSubdirectories.Any();
 	}
 }
