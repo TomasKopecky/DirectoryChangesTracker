@@ -45,7 +45,7 @@ namespace DirectoryChangesTracker.Validators
 			catch (Exception ex)
 			{
 				//TODO: log the exception
-				return Result<FileSnapshot>.Failure($"Exception caught during reading the The file on the provided file path '{fileLocalPath}'");
+				return Result<FileSnapshot>.Failure($"Exception caught during reading the file on the provided file path '{fileLocalPath}'");
 			}
 		}
 	}

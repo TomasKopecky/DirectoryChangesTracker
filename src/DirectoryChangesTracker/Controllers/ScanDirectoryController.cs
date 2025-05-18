@@ -50,17 +50,24 @@ namespace DirectoryChangesTracker.Controllers
 				return View();
 			}
 
-			string localDirectoryPath = directorySnapshot.LocalPath;
-
 			Result<IReadOnlyCollection<ScannedDirectoryResult>> loadedJsonFileResults = await _directoryScanRepository.LoadAllAsync();
 			if (!SuccessOrAddModelError(loadedJsonFileResults, "Failed to load the saved scan history."))
 				return View(null);
+
+			string localDirectoryPath = directorySnapshot.LocalPath;
+
+			if (!Directory.Exists(localDirectoryPath))
+			{
+				await DeleteAndSaveNonExistingDirectory(loadedJsonFileResults.Value, directorySnapshot);
+				ModelState.AddModelError(string.Empty, $"The directory on path '{localDirectoryPath}' doesn't exist.");
+				return View(null);
+			}
 
 			Result<DirectorySnapshot> directoryScannerCurrentResult = await _directoryScanner.ScanDirectory(localDirectoryPath);
 			if (!SuccessOrAddModelError(directoryScannerCurrentResult, $"Failed to scan the directory on path '{localDirectoryPath}'"))
 				return View(null);
 
-			ScannedDirectoryResult directoryScannerPreviousResult = new ScannedDirectoryResult() { DirectorySnapshot = new() { LocalPath = localDirectoryPath } };
+			ScannedDirectoryResult directoryScannerPreviousResult = new ScannedDirectoryResult() { DirectorySnapshot = directorySnapshot };
 
 			if (loadedJsonFileResults.Value.Any(fr => fr.DirectorySnapshot.LocalPath == localDirectoryPath))
 				directoryScannerPreviousResult = loadedJsonFileResults.Value.First(fr => fr.DirectorySnapshot.LocalPath == localDirectoryPath);
@@ -130,12 +137,20 @@ namespace DirectoryChangesTracker.Controllers
 				newScannedDirectoryResult.DirectorySnapshot.ListingsCount = matchingScannedDirectoryResult.DirectorySnapshot.ListingsCount + 1;
 
 				matchingScannedDirectoryResult = newScannedDirectoryResult;
+				matchingScannedDirectoryResult.IsNew = false;
 
 				// if the result for the specific path doesn't exist yet - create it
 				if (!scannedDirectoryModifiedResults.Any(mr => mr.DirectorySnapshot.LocalPath == matchingScannedDirectoryResult.DirectorySnapshot.LocalPath))
 				{
 					matchingScannedDirectoryResult.IsNew = true;
 					scannedDirectoryModifiedResults.Add(matchingScannedDirectoryResult);
+				}
+
+				// if it already exist - then swap the old result with the new one
+				else
+				{
+					int resultToSwapIndex = scannedDirectoryModifiedResults.FindIndex(mr => mr.DirectorySnapshot.LocalPath == matchingScannedDirectoryResult.DirectorySnapshot.LocalPath);
+					scannedDirectoryModifiedResults[resultToSwapIndex] = matchingScannedDirectoryResult;
 				}
 
 				await _directoryScanRepository.SaveAllAsync(scannedDirectoryModifiedResults);
@@ -146,6 +161,41 @@ namespace DirectoryChangesTracker.Controllers
 			{
 				//TODO: log the exception
 				return Result.Failure("Error during saving the new directory scan result");
+			}
+		}
+
+		/// <summary>
+		/// Deletes the possible already stored result in the storage for a directory that doesn't already exist
+		/// </summary>
+		/// <param name="scannedDirectoryResults">The list of previously scanned directory results.</param>
+		/// <param name="directorySnapshot">The newly created directory snapshot.</param>
+		private async Task<Result> DeleteAndSaveNonExistingDirectory(IReadOnlyCollection<ScannedDirectoryResult> scannedDirectoryResults, DirectorySnapshot directorySnapshot)
+		{
+			if (!scannedDirectoryResults.Any(dr => dr.DirectorySnapshot.LocalPath == directorySnapshot.LocalPath))
+				return Result.Success();
+
+			List<ScannedDirectoryResult> scannedDirectoryResultsList = scannedDirectoryResults.ToList();
+
+			try
+			{
+				string errorMessage = "Failed to delete the currently non-existing directory from the scan history.";
+				int matchingDirectorySnapshotIndex = scannedDirectoryResultsList.FindIndex(dr => dr.DirectorySnapshot.LocalPath == directorySnapshot.LocalPath);
+
+				if (matchingDirectorySnapshotIndex == -1)
+					return Result.Success();
+
+				scannedDirectoryResultsList.RemoveAt(matchingDirectorySnapshotIndex);
+
+				Result savedJsonFileResults = await _directoryScanRepository.SaveAllAsync(scannedDirectoryResultsList);
+
+				if (!SuccessOrAddModelError(savedJsonFileResults, errorMessage))
+					return Result.Failure(errorMessage);
+
+				return Result.Success();
+			}
+			catch (Exception ex)
+			{
+				return Result.Failure($"Failed to delete the already non-existing directory '{directorySnapshot.LocalPath}' and save it to the scan history.");
 			}
 		}
 	}

@@ -23,6 +23,6 @@
 		/// <summary>
 		/// Version number that increments each time the file is modified.
 		/// </summary>
-		public int Version { get; set; }
+		public int Version { get; set; } = 1;
 	}
 }

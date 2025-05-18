@@ -17,7 +17,7 @@ namespace DirectoryChangesTracker.Models
 		/// <summary>
 		/// Date and time when this directory was scanned for the first time.
 		/// </summary>
-		public DateTime FirstListing { get; set; }
+		public DateTime FirstListing { get; set; } = DateTime.Now;
 
 		/// <summary>
 		/// Date and time when this directory was scanned most recently.
