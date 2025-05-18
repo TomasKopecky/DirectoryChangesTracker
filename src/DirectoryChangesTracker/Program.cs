@@ -1,5 +1,8 @@
+using DirectoryChangesTracker.Configuration;
+using DirectoryChangesTracker.Repositories;
 using DirectoryChangesTracker.Services;
 using DirectoryChangesTracker.Validators;
+using Microsoft.Extensions.Options;
 
 namespace DirectoryChangesTracker
 {
@@ -13,10 +16,17 @@ namespace DirectoryChangesTracker
 			builder.Services.AddControllersWithViews();
 
 			// Add services via DI
+			builder.Services.Configure<DirectoryScannerSettings>(builder.Configuration.GetSection("DirectoryScannerSettings"));
 			builder.Services.AddScoped<IDirectoryValidator, DirectoryValidator>();
 			builder.Services.AddScoped<IDirectoryScanner, DirectoryScanner>();
 			builder.Services.AddScoped<IDirectorySnapshotComparer, DirectorySnapshotComparer>();
 			builder.Services.AddScoped<IFileValidator, FileValidator>();
+			builder.Services.AddScoped<IDirectoryScanRepository>(sp =>
+			{
+				DirectoryScannerSettings settings = sp.GetRequiredService<IOptions<DirectoryScannerSettings>>().Value;
+				return new JsonDirectoryScanRepository(settings.GetResolvedOutputPath());
+			});
+
 
 			var app = builder.Build();
 

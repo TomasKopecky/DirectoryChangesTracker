@@ -42,13 +42,15 @@ namespace DirectoryChangesTracker.Controllers
 		/// </summary>
 		/// <param name="localDirectoryPath">The local directory path entered by the user.</param>
 		[HttpPost]
-		public async Task<IActionResult> ScanDirectory(string localDirectoryPath)
+		public async Task<IActionResult> ScanDirectory(DirectorySnapshot directorySnapshot)
 		{
-			if (string.IsNullOrEmpty(localDirectoryPath))
+			if (directorySnapshot == null || string.IsNullOrEmpty(directorySnapshot.LocalPath))
 			{
-				ModelState.AddModelError(nameof(localDirectoryPath), "The local directory path is required.");
+				ModelState.AddModelError(nameof(directorySnapshot.LocalPath), "The local directory path is required.");
 				return View();
 			}
+
+			string localDirectoryPath = directorySnapshot.LocalPath;
 
 			Result<IReadOnlyCollection<ScannedDirectoryResult>> loadedJsonFileResults = await _directoryScanRepository.LoadAllAsync();
 			if (!SuccessOrAddModelError(loadedJsonFileResults, "Failed to load the saved scan history."))
